@@ -9,7 +9,11 @@ class HotelController extends Controller
 {
     public function index()
     {
-        return response()->json(Hotel::latest()->get());
+        $userId = auth()->id();
+
+        return response()->json(
+            Hotel::where('user_id', $userId)->latest()->get()
+        );
     }
 
     public function store(Request $request)
@@ -25,6 +29,7 @@ class HotelController extends Controller
         ]);
 
         $hotel = new Hotel($validated);
+        $hotel->user_id = auth()->id();
 
         if ($request->hasFile('image')) {
             $hotel->image = $request->file('image')->store('hotels', 'public');
@@ -37,11 +42,19 @@ class HotelController extends Controller
 
     public function show(Hotel $hotel)
     {
+        if ($hotel->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Accès refusé'], 403);
+        }
+
         return response()->json($hotel);
     }
 
     public function update(Request $request, Hotel $hotel)
     {
+        if ($hotel->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Accès refusé'], 403);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:120',
             'address' => 'required|string|max:255',
@@ -65,6 +78,10 @@ class HotelController extends Controller
 
     public function destroy(Hotel $hotel)
     {
+        if ($hotel->user_id !== auth()->id()) {
+            return response()->json(['message' => 'Accès refusé'], 403);
+        }
+
         $hotel->delete();
         return response()->json(['message' => 'Supprimé']);
     }

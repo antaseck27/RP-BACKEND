@@ -10,6 +10,7 @@ class Hotel extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'name',
         'address',
         'email',
@@ -18,4 +19,9 @@ class Hotel extends Model
         'currency',
         'image',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
