@@ -15,7 +15,10 @@ return [
 
 ],
 
-    'allowed_origins_patterns' => [],
+   'allowed_origins_patterns' => [
+    '/^https:\\/\\/rp-front-.*\\.vercel\\.app$/',
+    '/^https:\\/\\/.*\\.vercel\\.app$/',
+],
 
     'allowed_headers' => ['*'],
 
